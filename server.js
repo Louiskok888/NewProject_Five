@@ -106,8 +106,10 @@ app.put("/update-profile", authenticateUser, async (req, res) => {
 });
 
 //Reset password route
-app.post("/reset-password", async (req, res) => {
-  const { email, newPassword } = req.body;
+// Reset password route
+app.post("/reset-password", authenticateUser, async (req, res) => {
+  const { newPassword } = req.body;
+  const email = req.user.email; // Get the email from the token
 
   const user = await User.findOne({ email });
   if (!user) {
