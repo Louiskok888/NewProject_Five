@@ -89,7 +89,7 @@ app.get("/profile", authenticateUser, async (req, res) => {
 
 
 //Update profile route
-app.post("/update-profile", async (req, res) => {
+app.put("/update-profile", async (req, res) => {
   const { email, newName, newEmail } = req.body;
 
   const user = await User.findOne({ email });
