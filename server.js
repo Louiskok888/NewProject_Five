@@ -26,21 +26,26 @@ const User = mongoose.model("User", UserSchema);
 
 // Registration Route
 app.post("/register", async (req, res) => {
-    const { name, email, password } = req.body;
+  try {
+      const { name, email, password } = req.body;
 
-    // Check if the user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
-    }
+      // Check if the user already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ message: "User already exists" });
+      }
 
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(password, 10);
+      // Hash the password before saving
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save();
+      const newUser = new User({ name, email, password: hashedPassword });
+      await newUser.save();
 
-    res.json({ message: "User registered successfully" });
+      res.json({ message: "User registered successfully" });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Login Route
