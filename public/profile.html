@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+</head>
+<body>
+    <h2>Profile</h2>
+    <p><strong>Name:</strong> <span id="userName"></span></p>
+    <p><strong>Email:</strong> <span id="userEmail"></span></p>
+
+    <button onclick="editProfile()">Edit</button>
+    <button onclick="resetPassword()">Reset Password</button>
+    <button onclick="logout()">Logout</button>
+
+    <script>
+        // Load user data from localStorage
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            window.location.href = "login.html"; // Redirect if not logged in
+        } else {
+            document.getElementById("userName").textContent = user.name;
+            document.getElementById("userEmail").textContent = user.email;
+        }
+
+        function editProfile() {
+            const newName = prompt("Enter new name:", user.name);
+            const newEmail = prompt("Enter new email:", user.email);
+            if (newName && newEmail) {
+                fetch("https://new-login-839a689de041.herokuapp.com/update-profile", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email: user.email, newName, newEmail })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.success) {
+                        user.name = newName;
+                        user.email = newEmail;
+                        localStorage.setItem("user", JSON.stringify(user));
+                        window.location.reload();
+                    }
+                });
+            }
+        }
+
+        function resetPassword() {
+            const newPassword = prompt("Enter new password:");
+            if (newPassword) {
+                fetch("https://new-login-839a689de041.herokuapp.com/reset-password", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ email: user.email, newPassword })
+                })
+                .then(response => response.json())
+                .then(data => alert(data.message));
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem("user");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+</html>

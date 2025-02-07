@@ -62,6 +62,40 @@ app.post("/login", async (req, res) => {
     res.json({ message: "Login successful" });
 });
 
+
+//Update profile route
+app.post("/update-profile", async (req, res) => {
+  const { email, newName, newEmail } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+      return res.status(400).json({ message: "User not found" });
+  }
+
+  user.name = newName;
+  user.email = newEmail;
+  await user.save();
+
+  res.json({ success: true, message: "Profile updated successfully" });
+});
+
+//Reset password route
+app.post("/reset-password", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+      return res.status(400).json({ message: "User not found" });
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+
+  res.json({ message: "Password reset successfully" });
+});
+
+
+
 // Start Server
 const PORT = process.env.PORT || 5000;
 
