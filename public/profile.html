@@ -47,7 +47,7 @@
             const user = JSON.parse(localStorage.getItem("user"));
             const newName = prompt("Enter new name:", user.name);
             const newEmail = prompt("Enter new email:", user.email);
-
+        
             if (newName && newEmail) {
                 fetch("https://new-login-839a689de041.herokuapp.com/update-profile", {
                     method: "PUT",
@@ -64,10 +64,16 @@
                         localStorage.setItem("user", JSON.stringify({ name: newName, email: newEmail }));
                         window.location.reload();
                     }
+                })
+                .catch(error => {
+                    console.error("Error updating profile:", error);
+                    alert("Error updating profile. Please try again.");
                 });
+            } else {
+                alert("Both fields must be filled in.");
             }
         }
-
+        
         function resetPassword() {
             const newPassword = prompt("Enter new password:");
             if (newPassword) {

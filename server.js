@@ -88,9 +88,10 @@ app.get("/profile", authenticateUser, async (req, res) => {
 });
 
 
-//Update profile route
-app.put("/update-profile", async (req, res) => {
-  const { email, newName, newEmail } = req.body;
+// Update profile route
+app.put("/update-profile", authenticateUser, async (req, res) => {
+  const { newName, newEmail } = req.body;
+  const email = req.user.email; // Get the email from the token
 
   const user = await User.findOne({ email });
   if (!user) {
