@@ -1,41 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-</head>
-<body>
+  </head>
+  <body>
     <h2>Login</h2>
     <form id="loginForm">
-        <input type="email" id="email" placeholder="Email" required><br><br>
-        <input type="password" id="password" placeholder="Password" required><br><br>
-        <button type="submit">Login</button>
+      <input type="email" id="email" placeholder="Email" required /><br /><br />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password"
+        required
+      /><br /><br />
+      <button type="submit">Login</button>
     </form>
 
     <p>Don't have an account? <a href="index.html">Register here</a></p>
 
     <script>
-        document.getElementById("loginForm").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-        
-            const response = await fetch("https://new-login-839a689de041.herokuapp.com/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            });
-        
-            const data = await response.json();
-            alert(data.message);
-        
-            if (response.ok) {
-                localStorage.setItem("user", JSON.stringify(data.user)); // Store user data
-                window.location.href = "profile.html"; // Redirect to profile page
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          const response = await fetch(
+            "https://new-login-839a689de041.herokuapp.com/login",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
             }
+          );
+
+          const data = await response.json();
+
+          console.log(data); // Debug: Check what the response looks like
+          alert(data.message);
+
+          if (response.ok) {
+            localStorage.setItem("user", JSON.stringify(data.user)); // Store user data
+            console.log("User data saved:", localStorage.getItem("user")); // Verify data is saved
+            window.location.href = "profile.html"; // Redirect to profile page
+          } else {
+            console.error("Login failed:", data.message); // Log failure message
+          }
         });
-            </script>
-</body>
+    </script>
+  </body>
 </html>
