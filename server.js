@@ -61,7 +61,6 @@ app.post("/login", async (req, res) => {
 
 
 //Profile fetch route
-const jwt = require("jsonwebtoken");
 
 // Middleware to verify token
 const authenticateUser = (req, res, next) => {
