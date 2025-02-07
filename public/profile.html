@@ -19,30 +19,30 @@
         const token = localStorage.getItem("token");
 
         if (!token) {
-            window.location.href = "login.html"; // Redirect if not logged in
+          window.location.href = "login.html"; // Redirect if not logged in
         } else {
-            // Fetch user data from the backend
-            fetch("https://new-login-839a689de041.herokuapp.com/profile", {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById("userName").textContent = data.user.name;
-                    document.getElementById("userEmail").textContent = data.user.email;
-                    localStorage.setItem("user", JSON.stringify(data.user)); // Update local storage
-                } else {
-                    alert("Session expired. Please log in again.");
-                    logout();
-                }
-            })
-            .catch(error => console.error("Error loading profile:", error));
+          // Fetch user data from the backend using the token
+          fetch("https://new-login-839a689de041.herokuapp.com/profile", {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json"
+            }
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              document.getElementById("userName").textContent = data.user.name;
+              document.getElementById("userEmail").textContent = data.user.email;
+              localStorage.setItem("user", JSON.stringify(data.user)); // Update local storage
+            } else {
+              alert("Session expired. Please log in again.");
+              logout();
+            }
+          })
+          .catch(error => console.error("Error loading profile:", error));
         }
-
+        
         function editProfile() {
             const user = JSON.parse(localStorage.getItem("user"));
             const newName = prompt("Enter new name:", user.name);
