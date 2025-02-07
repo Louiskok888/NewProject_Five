@@ -44,22 +44,43 @@ app.post("/register", async (req, res) => {
 });
 
 // Login Route
+const jwt = require("jsonwebtoken");
+
 app.post("/login", async (req, res) => {
     const { email, password } = req.body;
-
-    // Check if user exists
     const user = await User.findOne({ email });
-    if (!user) {
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(400).json({ message: "Invalid email or password" });
     }
 
-    // Compare hashed password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-        return res.status(400).json({ message: "Invalid email or password" });
-    }
+    const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    res.json({ message: "Login successful" });
+    res.json({ success: true, message: "Login successful", token, user: { name: user.name, email: user.email } });
+});
+
+
+//Profile fetch route
+const jwt = require("jsonwebtoken");
+
+// Middleware to verify token
+const authenticateUser = (req, res, next) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) return res.status(403).json({ message: "Invalid token" });
+        req.user = decoded;
+        next();
+    });
+};
+
+// Profile Route
+app.get("/profile", authenticateUser, async (req, res) => {
+    const user = await User.findOne({ email: req.user.email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({ success: true, user: { name: user.name, email: user.email } });
 });
 
 
