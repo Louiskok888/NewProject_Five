@@ -2,15 +2,16 @@
   "name": "project-4",
   "version": "1.0.0",
   "main": "index.js",
-"scripts": {
-  "start": "node server.js",
-  "heroku-postbuild": "npm install"
-},
+  "scripts": {
+    "start": "node server.js",
+    "heroku-postbuild": "npm install"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
